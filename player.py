@@ -16,6 +16,8 @@ from constants import (
     SHOT_RADIUS,
 )
 from logger import log_event
+from power_shield import Power_Shield
+from power_up import Power_Up
 from shield_pulse import Shield_Pulse
 from shot import Shot
 
@@ -30,8 +32,11 @@ class Player(CircleShape):
         self.shield = True
         self.kill_counter = 0
         self.left_shot = True
-        self.power_up = 0
+        self.power_ups = {}
         self.power_multi = 1
+        self.power_shield = None
+        self.power_speed = 1
+        self.can_end = False
 
     def destroy_shield(self):
         if self.shield:
@@ -39,8 +44,37 @@ class Player(CircleShape):
             x, y = self.position
             Shield_Pulse(x, y, self.radius)
 
-    def gain_power_up(self):
-        self.power_up += POWER_UP_TIME
+    def gain_power_up(self, power):
+        if power not in self.power_ups:
+            self.power_ups[power] = POWER_UP_TIME
+        else:
+            self.power_ups[power] += POWER_UP_TIME * 0.5
+
+    def update_power_ups(self, dt):
+        if len(self.power_ups) > 0:
+            self.power_speed = POWER_UP_MULTI
+
+            if "red" in self.power_ups:
+                self.power_multi = POWER_UP_MULTI
+                if self.power_ups["red"] > 0:
+                    self.power_ups["red"] -= dt
+                else:
+                    del self.power_ups["red"]
+                    self.power_multi = 1
+
+            if "purple" in self.power_ups:
+                if not self.power_shield:
+                    x, y = self.position
+                    self.power_shield = Power_Shield(x, y, PLAYER_RADIUS, self)
+                if self.power_ups["purple"] > 0:
+                    self.power_ups["purple"] -= dt
+                else:
+                    del self.power_ups["purple"]
+                    if self.power_shield:
+                        self.power_shield.done = True
+                        self.power_shield = None
+        else:
+            self.power_speed = 1
 
     def triangle(self):
         radius = float(self.radius)
@@ -56,12 +90,14 @@ class Player(CircleShape):
 
     def color(self, source):
         if source == "player":
-            if self.power_up > 0:
-                return "blue"
+            if "red" in self.power_ups:
+                if self.power_ups["red"] > 0:
+                    return "red"
             return "white"
         elif source == "shot":
-            if self.power_up > 0:
-                return "blue"
+            if "red" in self.power_ups:
+                if self.power_ups["red"] > 0:
+                    return "red"
             return "green"
         else:
             return "white"
@@ -81,7 +117,7 @@ class Player(CircleShape):
 
     def move(self, dt):
         if dt > 0:
-            self.position += self.forward_vect * PLAYER_SPEED * dt * self.power_multi
+            self.position += self.forward_vect * PLAYER_SPEED * dt * self.power_speed
         else:
             self.position += self.forward_vect * PLAYER_SPEED * dt * 0.5
 
@@ -103,7 +139,7 @@ class Player(CircleShape):
             r_shot.velocity = self.forward_vect * PLAYER_SHOOT_SPEED
 
     def add_kill_count(self):
-        self.kill_counter += 1 * self.power_multi
+        self.kill_counter += 1
         if not self.shield:
             if self.kill_counter % SHIELD_PULSE_RECHARGE_AMOUNT == 0:
                 self.shield = True
@@ -121,10 +157,14 @@ class Player(CircleShape):
         self.forward_vect = pygame.Vector2(0, 1).rotate(self.rotation)
         self.shot_timer -= dt
         rev_dt = dt * -1
+        self.update_power_ups(dt)
         if self.dead:
             self.end_timer += dt
-            if self.end_timer >= 2:
-                sys.exit()
+            if self.end_timer >= 0.2:
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN:
+                        sys.exit()
+
         else:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_a]:
@@ -141,9 +181,3 @@ class Player(CircleShape):
                 if self.shot_timer <= 0:
                     self.shot_timer = PLAYER_SHOOT_COOLDOWN / self.power_multi
                     self.shoot()
-
-            if self.power_up > 0:
-                self.power_up -= dt
-                self.power_multi = POWER_UP_MULTI
-            else:
-                self.power_multi = 1

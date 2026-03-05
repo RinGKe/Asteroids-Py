@@ -25,18 +25,20 @@ class Asteroid(CircleShape):
             x, y = self.position
             a = Asteroid(x, y, radius)
             b = Asteroid(x, y, radius)
-            a.velocity = a_velocity * random.uniform(1, 2)
-            b.velocity = b_velocity * random.uniform(1, 2)
+            a.velocity = a_velocity * random.uniform(1, 1.5)
+            b.velocity = b_velocity * random.uniform(1, 1.5)
             self.spawn_power_up()
 
     def spawn_power_up(self):
         if random.uniform(0, 1) <= POWER_UP_CHANCE:
             x, y = self.position
             power_up = Power_Up(x, y, 15)
-            power_up.velocity = self.velocity * random.uniform(0.2, 1)
+            power_up.velocity = self.velocity * random.uniform(0.2, 0.8)
 
     def draw(self, surface):
-        pygame.draw.circle(surface, "red", self.position, self.radius, width=LINE_WIDTH)
+        pygame.draw.circle(
+            surface, "blue", self.position, self.radius, width=LINE_WIDTH
+        )
 
     def update(self, dt):
         self.position += self.velocity * dt

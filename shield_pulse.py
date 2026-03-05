@@ -19,5 +19,5 @@ class Shield_Pulse(CircleShape):
     def update(self, dt):
         self.radius += SHIELD_PULSE_SPEED * dt
         self.life_timer += dt
-        if self.life_timer >= 0.5:
+        if self.life_timer >= 0.6:
             self.kill()

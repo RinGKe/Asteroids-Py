@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 from circleshape import CircleShape
@@ -7,6 +9,7 @@ class Power_Up(CircleShape):
     def __init__(self, x, y, radius):
         super().__init__(x, y, radius)
         self.rotation = 0
+        self.power_type = random.choice(["red", "purple"])
 
     def triangle(self):
         radius = float(self.radius)
@@ -19,7 +22,7 @@ class Power_Up(CircleShape):
         return [a, b, c]
 
     def draw(self, surface):
-        pygame.draw.polygon(surface, "gold", self.triangle())
+        pygame.draw.polygon(surface, self.power_type, self.triangle())
 
     def update(self, dt):
         self.position += self.velocity * dt
