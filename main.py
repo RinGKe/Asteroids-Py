@@ -1,3 +1,4 @@
+import sys
 from pydoc import text
 
 import pygame
@@ -17,7 +18,7 @@ def screen_text(player, screen, font, font_i):
     if player.dead:
         text_to_render(font, screen, "GAME OVER!", 0, 0)
         text_to_render(font, screen, f"YOU SCORED: {player.kill_counter} POINTS", 0, 50)
-        text_to_render(font_i, screen, "Press any key to close", 0, 85)
+        text_to_render(font_i, screen, "Press any ESC or SPACE to close", 0, 85)
 
     text_surface = font.render(f"SCORE: {str(player.kill_counter)}", True, "white")
     screen.blit(text_surface, (25, SCREEN_HEIGHT - 50))
@@ -51,6 +52,7 @@ def main():
 
     clock = pygame.time.Clock()
     dt = 0
+    end_timer = 0
 
     # SPRITE GROUPS
     updatable = pygame.sprite.Group()
@@ -72,16 +74,23 @@ def main():
 
     # GAME LOOP
     while True:
-        log_state()
+        dt = clock.tick(FPS) / 1000
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
 
+        if player.dead:
+            end_timer += dt
+            if end_timer >= 1:
+                if pygame.key.get_pressed()[pygame.K_SPACE]:
+                    sys.exit()
+                if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+                    sys.exit()
+
         screen.fill("black")
 
         screen_text(player, screen, font, font_i)
-
-        dt = clock.tick(FPS) / 1000
 
         updatable.update(dt)
         for i in drawable:
@@ -96,6 +105,8 @@ def main():
                     player.death()
 
             for s in shots:
+                if player.dead:
+                    s.kill()
                 if s.collides_with(a):
                     log_event("asteroid_shot")
                     a.split(player)

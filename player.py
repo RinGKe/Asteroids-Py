@@ -142,7 +142,8 @@ class Player(CircleShape):
         self.kill_counter += 1
         if not self.shield:
             if self.kill_counter % SHIELD_PULSE_RECHARGE_AMOUNT == 0:
-                self.shield = True
+                if not self.dead:
+                    self.shield = True
 
     def death(self):
         if not self.dead:
@@ -159,11 +160,7 @@ class Player(CircleShape):
         rev_dt = dt * -1
         self.update_power_ups(dt)
         if self.dead:
-            self.end_timer += dt
-            if self.end_timer >= 0.2:
-                for event in pygame.event.get():
-                    if event.type == pygame.KEYDOWN:
-                        sys.exit()
+            return
 
         else:
             keys = pygame.key.get_pressed()
