@@ -1,12 +1,10 @@
 import sys
-from pydoc import text
 
 import pygame
 
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from constants import FONT_SIZE, FPS, SCREEN_HEIGHT, SCREEN_WIDTH
-from logger import log_event, log_state
 from player import Player
 from power_shield import Power_Shield
 from power_up import Power_Up
@@ -108,7 +106,6 @@ def main():
                 if player.dead:
                     s.kill()
                 if s.collides_with(a):
-                    log_event("asteroid_shot")
                     a.split(player)
                     if hasattr(s, "done"):
                         continue

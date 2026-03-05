@@ -17,7 +17,6 @@ from constants import (
 )
 from logger import log_event
 from power_shield import Power_Shield
-from power_up import Power_Up
 from shield_pulse import Shield_Pulse
 from shot import Shot
 
