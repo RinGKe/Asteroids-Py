@@ -4,7 +4,6 @@ import pygame
 
 from circleshape import CircleShape
 from constants import ASTEROID_MIN_RADIUS, LINE_WIDTH, POWER_UP_CHANCE
-from logger import log_event
 from power_up import Power_Up
 
 
@@ -18,7 +17,6 @@ class Asteroid(CircleShape):
             player.add_kill_count()
             return 0
         else:
-            log_event("asteroid_split")
             a_velocity = self.velocity.rotate(random.uniform(20, 50))
             b_velocity = self.velocity.rotate(random.uniform(-20, -50))
             radius = self.radius - ASTEROID_MIN_RADIUS

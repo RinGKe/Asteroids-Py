@@ -15,7 +15,6 @@ from constants import (
     SHIELD_PULSE_RECHARGE_AMOUNT,
     SHOT_RADIUS,
 )
-from logger import log_event
 from power_shield import Power_Shield
 from shield_pulse import Shield_Pulse
 from shot import Shot
