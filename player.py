@@ -145,7 +145,6 @@ class Player(CircleShape):
 
     def death(self):
         if not self.dead:
-            log_event("player_hit")
             print("|------------------------------------")
             print("|-------------GAME OVER!-------------")
             print(f"|-------------{self.kill_counter} POINTS!------------")
