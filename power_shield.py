@@ -8,7 +8,7 @@ from constants import LINE_WIDTH
 
 class Power_Shield(CircleShape):
     def __init__(self, x, y, radius, player):
-        super().__init__(x, y, (radius * 2))
+        super().__init__(x, y, (radius * 1.65))
         self.done = False
         self.life_timer = 0
         self.player_ref = player

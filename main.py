@@ -12,7 +12,7 @@ from shield_pulse import Shield_Pulse
 from shot import Shot
 
 
-def screen_text(player, screen, font, font_i):
+def screen_text(player, field, screen, font, font_i):
     if player.dead:
         text_to_render(font, screen, "GAME OVER!", 0, 0)
         text_to_render(font, screen, f"YOU SCORED: {player.kill_counter} POINTS", 0, 50)
@@ -20,6 +20,8 @@ def screen_text(player, screen, font, font_i):
 
     text_surface = font.render(f"SCORE: {str(player.kill_counter)}", True, "white")
     screen.blit(text_surface, (25, SCREEN_HEIGHT - 50))
+    text_surface = font.render(f"STAGE: {str(field.current_stage)}", True, "white")
+    screen.blit(text_surface, (25, SCREEN_HEIGHT - 100))
 
 
 def text_to_render(font, screen, text, off_w, off_h):
@@ -88,7 +90,7 @@ def main():
 
         screen.fill("black")
 
-        screen_text(player, screen, font, font_i)
+        screen_text(player, field, screen, font, font_i)
 
         updatable.update(dt)
         for i in drawable:

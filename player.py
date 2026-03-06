@@ -51,7 +51,7 @@ class Player(CircleShape):
 
     def update_power_ups(self, dt):
         if len(self.power_ups) > 0:
-            self.power_speed = POWER_UP_MULTI
+            self.power_speed = POWER_UP_MULTI * 0.75
 
             if "red" in self.power_ups:
                 self.power_multi = POWER_UP_MULTI

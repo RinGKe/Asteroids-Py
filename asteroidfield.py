@@ -44,9 +44,11 @@ class AsteroidField(pygame.sprite.Sprite):
         self.spawn_timer = 0.0
         self.stage_timer = 0.0
         self.spawn_multi = 1
+        self.current_stage = 1
 
     def add_spawn_multi(self):
         self.spawn_multi += STAGE_SPAWN_MULTI
+        self.current_stage += 1
 
     def spawn(self, radius, position, velocity):
         asteroid = Asteroid(position.x, position.y, radius)
@@ -68,5 +70,6 @@ class AsteroidField(pygame.sprite.Sprite):
             self.spawn(ASTEROID_MIN_RADIUS * kind, position, velocity)
 
         if self.stage_timer > STAGE_TIME_RATE:
+            self.current_stage += 1
             self.spawn_multi += STAGE_SPAWN_MULTI
             self.stage_timer = 0
